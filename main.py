@@ -1,97 +1,66 @@
 import re
-import colorama
+import argparse
 
 from colorama import Fore, Style
 
-def read_answer_for_topic(topic_number, all_answers):
-    return all_answers[topic_number - 1]
-
-def parse_input_file(input_file):
-    with open(input_file, 'r', encoding='latin-1') as file:
-        content = file.read()
-
-    question_pattern = r'(?m)^(\d+\. .+)$'
-    answer_pattern = r'(?m)^[a-d]\. .+$'
-    questions = []
-
-    current_question_text = None
-    current_answers = []
-
-    for line in content.splitlines():
-        question_match = re.match(question_pattern, line)
-        answer_match = re.match(answer_pattern, line)
-
-        if question_match:
-            if current_question_text and current_answers:
-                questions.append({
-                    'question': current_question_text,
-                    'answers': current_answers
-                })
-            current_question_text = question_match.group(1)
-            current_answers = []
-        elif answer_match:
-            current_answers.append(answer_match.group(0)[3:])
-
-    if current_question_text and current_answers:
-        questions.append({
-            'question': current_question_text,
-            'answers': current_answers
-        })
-
-    return questions
-
-def print_colored(text, color):
+def print_colored(text, color=Fore.WHITE):
     print(f"{color}{text}{Style.RESET_ALL}")
 
-def ask_question(topic_number, questions, all_answers):
-    print_colored(f"Topic {topic_number}:", Fore.WHITE)
-    questions_answered = 0
-    question_number = 0
-    for question_data in questions:
-        question_text = question_data['question']
-        answers = question_data['answers']
 
-        # Print question and answers
-        print_colored("\n" + question_text, Fore.CYAN)
-        for i, answer in enumerate(answers, start=1):
-            print_colored(f"{chr(96 + i)}. {answer}", Fore.WHITE)
+def parse_line(line: str) -> str:
+    # if line contains arabic number
+    if re.search(r"^[0-9]*\.", line):
+        return "question"
+    # if line starts with a, b, c, d
+    if re.search(r"^[a-d]\.", line):
+        return "answer"
 
-        user_answer = input(f"{Fore.YELLOW}Your answer: {Style.RESET_ALL}")
-        user_answer_index = ord(user_answer) - 96
+    return ""
 
-        correct_answer = (read_answer_for_topic(topic_number, all_answers))[question_number]
 
-        if user_answer_index == ord(correct_answer) - 96:
-            questions_answered += 1
-            print_colored("Correct!", Fore.GREEN)
-        else:
-            print_colored(f"Wrong! The correct answer is {correct_answer}.", Fore.RED)
-        question_number += 1
+def get_answer(question_number: int) -> str:
+    with open("answers.txt", "r") as f:
+        answers = f.readline()
+        return answers[question_number - 1]
 
-    print_colored(f"\nYou answered {questions_answered} out of {len(questions)} questions correctly.", Fore.YELLOW)
 
-def main():
-    colorama.init(autoreset=True)
+def ask_question(question, answers, correct_answer):
+    print_colored(question, Fore.YELLOW)
+    for _, answer in enumerate(answers):
+        print_colored(answer)
+    user_answer = input("Enter your answer: ")
+    if user_answer == correct_answer:
+        print_colored("Correct!", Fore.GREEN)
+    else:
+        print_colored(f"Wrong! Correct answer is {correct_answer}", Fore.RED)
     
-    answers = []
-    with open("answers", 'r', encoding='utf-8') as file:
-        for line in file:
-            answers.append(line.strip())
 
-    while True:
-        try:
-            topic_number = int(input("Enter a topic number (1 to 10) or 0 to exit: "))
-            if topic_number == 0:
-                break
-            elif 1 <= topic_number <= 10:
-                input_file = f"input{topic_number}"
-                questions = parse_input_file(input_file)
-                ask_question(topic_number, questions, answers)
-            else:
-                print_colored("Invalid topic number. Please enter a number between 1 and 10.", Fore.RED)
-        except ValueError:
-            print_colored("Invalid input. Please enter a valid topic number (1 to 10) or 0 to exit.", Fore.RED)
+def main(start_question, end_qustion):
+    print_flag = False
+    with open("input.txt", "r") as f:
+        for line in f:
+            line_type = parse_line(line)
+            if not line_type:
+                continue
+
+            if line_type == "question" and int(line.split(".")[0]) == start_question:
+                print_flag = True
+            if line_type == "question" and int(line.split(".")[0]) == end_qustion + 1:
+                print_flag = False
+                return
+
+            if print_flag:
+                ask_question(line, [next(f) for _ in range(5)],
+                             get_answer(int(line.split(".")[0])))
+
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-s", type=int, default=1, help="start question number")
+    parser.add_argument("-e", type=int, default=285, help="end question number")
+    args = parser.parse_args()
+    try:
+        main(args.s, args.e)
+    except KeyboardInterrupt:
+        print("\nExiting...")
 
