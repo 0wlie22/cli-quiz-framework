@@ -5,6 +5,7 @@ The CLI Quiz Maker is a Python command-line tool that allows you to take a quiz 
 ## Requirements
 
 Python 3.x
+
 `pip install -r requirements.txt`
 
 ## Usage
@@ -13,9 +14,9 @@ Python 3.x
 
 ## Arguments
 
--s START_QUESTION: The number of the first question in the quiz. Default is 1.
+-s START_QUESTION: The number of the first question in the quiz. The default is 1.
 
--e END_QUESTION: The number of the last question in the quiz. Default is 285.
+-e END_QUESTION: The number of the last question in the quiz. The default is 285.
 
 -b BLOCK_NUMBER: If specified, only questions within the specified block will be included in the quiz. Each block contains 10 questions (e.g., -b 0 will include questions 1 to 10, -b 1 will include questions 11 to 20, and so on).
 
@@ -35,7 +36,7 @@ Answer choices are marked by lines starting with a lowercase letter followed by 
 ## Quiz Taking
 
 * **Normal mode**: the CLI Quiz Maker will present the questions one by one and prompt you to choose an answer by typing the letter of your choice (a, b, c, or d). After you enter your answer, the program will inform you if your answer is correct or incorrect. At the end of the quiz, it will display the number of questions you answered correctly out of the total questions in the quiz.
-* **Practice mode**: all the questions answered wrong in the normal mode, would be revised and presented one more tim
+* **Practice mode**: all the questions answered wrong in the normal mode, would be revised and presented one more time
 
 ## Examples
 
