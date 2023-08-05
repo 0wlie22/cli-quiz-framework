@@ -124,6 +124,23 @@ def normal_mode(start_question, end_qustion):
                     wrong_questions.append(int(line.split(".")[0]))
 
 
+def random_mode():
+    questions = {}
+    with open(INPUT_FILE, "r") as file:
+        for line in file:
+            line_type = parse_line(line)
+            if not line_type:
+                continue
+
+            if line_type == "question":
+                question_number = int(line.split(".")[0])
+                questions[question_number] = {
+                    "question": line.split(".")[1],
+                    "answers": [next(file) for _ in range(5)],
+                }
+    print(questions.get(1))
+
+
 def main(args):
     if args.b >= 0:
         args.s = args.b * 10
@@ -131,6 +148,8 @@ def main(args):
 
     if args.practice:
         practice_mode()
+    elif args.random:
+        random_mode()
     else:
         normal_mode(args.s, args.e)
 
@@ -141,6 +160,7 @@ if __name__ == "__main__":
     parser.add_argument("-e", type=int, default=285, help="End question number")
     parser.add_argument("-b", type=int, default=-1, help="Block number")
     parser.add_argument("--practice", action="store_true", help="Practice mode")
+    parser.add_argument("--random", action="store_true", help="Random mode")
     args = parser.parse_args()
 
     try:
