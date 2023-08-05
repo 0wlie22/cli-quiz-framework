@@ -161,3 +161,4 @@ cython_debug/
 
 answers.txt
 input.txt
+wrong_questions.txt
