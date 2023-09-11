@@ -1641,9 +1641,9 @@ d. b un c variantos noraditas atbildes
 228. Izjaucot vai saliekot saujamieroci jaievero
 
 a. saujamieroci novirza jebkura virziena
-b. pirksts atrodas uz spruda melites
 b. parbauda vai patrona nav patrontelpa
-c. visi varianti
+c. pirksts atrodas uz spruda melites
+d. visi varianti
 
 229. Pirms izladesanas parbauda saujamieroca stavokli
 

@@ -114,7 +114,7 @@ def write_wrong_questions(wrong_questions) -> None:
             file.write(str(question) + "\n")
 
 
-def practice_mode() -> None:
+def practice_mode(block=0) -> None:
     """
     Practice questions from wrong_questions.txt file
     """
@@ -206,7 +206,7 @@ def main(args):
         args.s += 1
 
     if args.practice:
-        practice_mode()
+        practice_mode(args.b)
     else:
         normal_mode(args.s, args.e)
 
